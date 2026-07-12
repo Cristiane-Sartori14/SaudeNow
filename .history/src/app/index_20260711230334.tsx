@@ -1,8 +1,8 @@
 import { useRouter } from "expo-router";
 
-import Layout from "@/components/layout/Layout";
-import Header from "@/components/layout/Header";
-import CardHome from "@/components/cards/CardHome";
+import Layout from "../components/layout/Layout";
+import Header from "../components/layout/Header";
+import CardHome from "../components/cards/CardHome";
 
 export default function Home() {
   const router = useRouter();

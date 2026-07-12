@@ -13,35 +13,35 @@ export default function Home() {
       <Header />
 
       <CardHome
-        icon="pill"
+        icon="💊"
         title="Medicamentos"
         subtitle="Cadastre seus medicamentos"
         onPress={() => router.push("/medicamentos")}
       />
 
       <CardHome
-        icon="calendar-month"
+        icon="📅"
         title="Consultas"
         subtitle="Acompanhe suas consultas"
         onPress={() => router.push("/consultas")}
       />
 
       <CardHome
-        icon="human-handsup"
+        icon="🧘"
         title="Exercícios"
         subtitle="Exercícios de mobilidade"
         onPress={() => router.push("/exercicios")}
       />
 
       <CardHome
-        icon="history"
+        icon="📊"
         title="Histórico"
         subtitle="Visualize suas atividades"
         onPress={() => router.push("/historico")}
       />
 
       <CardHome
-        icon="cog-outline"
+        icon="⚙️"
         title="Configurações"
         subtitle="Preferências"
         onPress={() => router.push("/configuracoes")}

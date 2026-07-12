@@ -1,52 +1,50 @@
 import { useRouter } from "expo-router";
 
-import Layout from "@/components/layout/Layout";
-import Header from "@/components/layout/Header";
-import CardHome from "@/components/cards/CardHome";
+import Layout from "../components/Layout";
+import CardHome from "../components/CardHome";
 
 export default function Home() {
   const router = useRouter();
 
   return (
-    <Layout>
-
-      <Header />
-
+    <Layout
+      title="SaúdeNow"
+      subtitle="Organize sua rotina de saúde"
+    >
       <CardHome
-        icon="pill"
+        icon="💊"
         title="Medicamentos"
         subtitle="Cadastre seus medicamentos"
         onPress={() => router.push("/medicamentos")}
       />
 
       <CardHome
-        icon="calendar-month"
+        icon="📅"
         title="Consultas"
         subtitle="Acompanhe suas consultas"
         onPress={() => router.push("/consultas")}
       />
 
       <CardHome
-        icon="human-handsup"
+        icon="🧘"
         title="Exercícios"
         subtitle="Exercícios de mobilidade"
         onPress={() => router.push("/exercicios")}
       />
 
       <CardHome
-        icon="history"
+        icon="📊"
         title="Histórico"
         subtitle="Visualize suas atividades"
         onPress={() => router.push("/historico")}
       />
 
       <CardHome
-        icon="cog-outline"
+        icon="⚙️"
         title="Configurações"
-        subtitle="Preferências"
+        subtitle="Preferências do aplicativo"
         onPress={() => router.push("/configuracoes")}
       />
-
     </Layout>
   );
 }

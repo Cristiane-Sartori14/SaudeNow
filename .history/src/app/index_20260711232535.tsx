@@ -41,7 +41,7 @@ export default function Home() {
       />
 
       <CardHome
-        icon="cog-outline"
+        icon="og-outline"
         title="Configurações"
         subtitle="Preferências"
         onPress={() => router.push("/configuracoes")}

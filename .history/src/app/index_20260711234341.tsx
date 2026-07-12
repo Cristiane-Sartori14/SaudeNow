@@ -16,7 +16,7 @@ export default function Home() {
         icon="pill"
         title="Medicamentos"
         subtitle="Cadastre seus medicamentos"
-        onPress={() => router.push("/medicamentos")}
+        onPress={() => router.push("/medicamentos/index")}
       />
 
       <CardHome
@@ -41,7 +41,7 @@ export default function Home() {
       />
 
       <CardHome
-        icon="cog-outline"
+        icon="og-outline"
         title="Configurações"
         subtitle="Preferências"
         onPress={() => router.push("/configuracoes")}
