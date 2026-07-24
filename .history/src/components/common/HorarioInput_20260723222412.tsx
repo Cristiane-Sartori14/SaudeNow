@@ -17,20 +17,18 @@ export default function HorarioInput({
   const [novoHorario, setNovoHorario] = useState("");
 
   function adicionarHorario() {
-  console.log("Antes:", horarios);
+    if (!novoHorario.trim()) {
+      return;
+    }
 
-  const novosHorarios = [...horarios, novoHorario];
+    if (horarios.includes(novoHorario)) {
+      return;
+    }
 
-  console.log("Depois:", novosHorarios);
+    onChange([...horarios, novoHorario]);
 
-  onChange(novosHorarios);
-
-  setTimeout(() => {
-    console.log("Após onChange:", novosHorarios);
-  }, 100);
-
-  setNovoHorario("");
-}
+    setNovoHorario("");
+  }
 
   function removerHorario(index: number) {
     onChange(horarios.filter((_, i) => i !== index));
@@ -49,10 +47,10 @@ export default function HorarioInput({
       </Pressable>
       {horarios.map((horario, index) => (
         <View key={index} style={styles.item}>
-          <Text style={styles.itemText}>🕒 {horario}</Text>
+          <Text style={styles.itemText}>{horario}</Text>
           <Pressable onPress={() => removerHorario(index)}>
             {" "}
-            <Text style={styles.remove}>🗑</Text>
+            <Text style={styles.remove}>Remover</Text>{" "}
           </Pressable>{" "}
         </View>
       ))}{" "}
@@ -61,25 +59,10 @@ export default function HorarioInput({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: Spacing.lg,
-  },
-
-  addButton: {
-    alignSelf: "flex-start",
-    backgroundColor: Colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    marginBottom: Spacing.md,
-  },
-
-  addText: {
-    color: Colors.white,
-    fontSize: Fonts.small,
-    fontWeight: "600",
-  },
-
+  container: { marginBottom: Spacing.lg },
+  
+  addButton: { alignSelf: "flex-start", marginBottom: Spacing.md },
+  addText: { color: Colors.primary, fontSize: Fonts.text, fontWeight: "600" },
   item: {
     backgroundColor: Colors.card,
     borderRadius: 12,
@@ -91,12 +74,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  itemText: { 
-    fontSize: Fonts.text, 
-    color: Colors.text 
-  },
-  
-  remove: {
-  fontSize: 22,
-},
+  itemText: { fontSize: Fonts.text, color: Colors.text },
+  remove: { color: Colors.danger, fontWeight: "600" },
 });

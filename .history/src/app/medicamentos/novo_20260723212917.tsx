@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, View, Text } from "react-native";
+import { Alert } from "react-native";
 
 import HorarioInput from "@/components/common/HorarioInput";
 import Input from "@/components/common/Input";
@@ -21,16 +21,16 @@ export default function NovoMedicamentoScreen() {
   const [observacoes, setObservacoes] = useState("");
 
   function salvar() {
-    if (
-      !nome.trim() ||
-      !dosagem.trim() ||
-      !quantidade.trim() ||
-      !dataInicio.trim() ||
-      horarios.length === 0
-    ) {
-      Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
-      return;
-    }
+   if (
+  !nome.trim() ||
+  !dosagem.trim() ||
+  !quantidade.trim() ||
+  !dataInicio.trim() ||
+  horarios.length === 0
+) {
+  Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
+  return;
+}
 
     Alert.alert("Medicamento", "Cadastro realizado com sucesso!");
 
@@ -42,7 +42,6 @@ export default function NovoMedicamentoScreen() {
       horarios,
       dataInicio,
       dataFim,
-      observacoes,
     });
   }
 
@@ -99,13 +98,6 @@ export default function NovoMedicamentoScreen() {
         label="Data de término (opcional)"
         value={dataFim}
         onChangeText={setDataFim}
-      />
-
-      <TextArea
-        label="Observações"
-        placeholder="Informações adicionais..."
-        value={observacoes}
-        onChangeText={setObservacoes}
       />
 
       <PrimaryButton title="Salvar" onPress={salvar} />

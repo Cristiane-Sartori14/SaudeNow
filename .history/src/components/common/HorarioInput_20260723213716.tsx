@@ -10,6 +10,7 @@ interface HorarioInputProps {
   horarios: string[];
   onChange: (horarios: string[]) => void;
 }
+
 export default function HorarioInput({
   horarios,
   onChange,
@@ -17,20 +18,18 @@ export default function HorarioInput({
   const [novoHorario, setNovoHorario] = useState("");
 
   function adicionarHorario() {
-  console.log("Antes:", horarios);
+    if (!novoHorario.trim()) {
+      return;
+    }
 
-  const novosHorarios = [...horarios, novoHorario];
+    if (horarios.includes(novoHorario)) {
+      return;
+    }
 
-  console.log("Depois:", novosHorarios);
+    onChange([...horarios, novoHorario]);
 
-  onChange(novosHorarios);
-
-  setTimeout(() => {
-    console.log("Após onChange:", novosHorarios);
-  }, 100);
-
-  setNovoHorario("");
-}
+    setNovoHorario("");
+  }
 
   function removerHorario(index: number) {
     onChange(horarios.filter((_, i) => i !== index));
@@ -44,18 +43,20 @@ export default function HorarioInput({
         value={novoHorario}
         onChangeText={setNovoHorario}
       />
+
       <Pressable style={styles.addButton} onPress={adicionarHorario}>
         <Text style={styles.addText}>+ Adicionar horário</Text>
       </Pressable>
+
       {horarios.map((horario, index) => (
         <View key={index} style={styles.item}>
-          <Text style={styles.itemText}>🕒 {horario}</Text>
+          <Text style={styles.itemText}>{horario}</Text>
+
           <Pressable onPress={() => removerHorario(index)}>
-            {" "}
-            <Text style={styles.remove}>🗑</Text>
-          </Pressable>{" "}
+            <Text style={styles.remove}>Remover</Text>
+          </Pressable>
         </View>
-      ))}{" "}
+      ))}
     </View>
   );
 }
@@ -87,16 +88,19 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
+
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  itemText: { 
-    fontSize: Fonts.text, 
-    color: Colors.text 
+
+  itemText: {
+    fontSize: Fonts.text,
+    color: Colors.text,
   },
-  
+
   remove: {
-  fontSize: 22,
-},
+    color: Colors.danger,
+    fontWeight: "600",
+  },
 });

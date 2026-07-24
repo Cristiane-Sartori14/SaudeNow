@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import Input from "@/components/common/Input";
 import Colors from "@/constants/Colors";
@@ -10,26 +15,25 @@ interface HorarioInputProps {
   horarios: string[];
   onChange: (horarios: string[]) => void;
 }
+
 export default function HorarioInput({
   horarios,
   onChange,
 }: HorarioInputProps) {
   const [novoHorario, setNovoHorario] = useState("");
 
-  function adicionarHorario() {
-  console.log("Antes:", horarios);
+function adicionarHorario() {
+  if (!horario.trim()) {
+    return;
+  }
 
-  const novosHorarios = [...horarios, novoHorario];
+  if (horarios.includes(horario)) {
+    return;
+  }
 
-  console.log("Depois:", novosHorarios);
+  onChange([...horarios, horario]);
 
-  onChange(novosHorarios);
-
-  setTimeout(() => {
-    console.log("Após onChange:", novosHorarios);
-  }, 100);
-
-  setNovoHorario("");
+  setHorario("");
 }
 
   function removerHorario(index: number) {
@@ -44,18 +48,25 @@ export default function HorarioInput({
         value={novoHorario}
         onChangeText={setNovoHorario}
       />
-      <Pressable style={styles.addButton} onPress={adicionarHorario}>
-        <Text style={styles.addText}>+ Adicionar horário</Text>
+
+      <Pressable
+        style={styles.addButton}
+        onPress={adicionarHorario}
+      >
+        <Text style={styles.addText}>
+          + Adicionar horário
+        </Text>
       </Pressable>
+
       {horarios.map((horario, index) => (
         <View key={index} style={styles.item}>
-          <Text style={styles.itemText}>🕒 {horario}</Text>
+          <Text style={styles.itemText}>{horario}</Text>
+
           <Pressable onPress={() => removerHorario(index)}>
-            {" "}
-            <Text style={styles.remove}>🗑</Text>
-          </Pressable>{" "}
+            <Text style={styles.remove}>Remover</Text>
+          </Pressable>
         </View>
-      ))}{" "}
+      ))}
     </View>
   );
 }
@@ -67,16 +78,12 @@ const styles = StyleSheet.create({
 
   addButton: {
     alignSelf: "flex-start",
-    backgroundColor: Colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
     marginBottom: Spacing.md,
   },
 
   addText: {
-    color: Colors.white,
-    fontSize: Fonts.small,
+    color: Colors.primary,
+    fontSize: Fonts.text,
     fontWeight: "600",
   },
 
@@ -87,16 +94,19 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
+
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  itemText: { 
-    fontSize: Fonts.text, 
-    color: Colors.text 
+
+  itemText: {
+    fontSize: Fonts.text,
+    color: Colors.text,
   },
-  
+
   remove: {
-  fontSize: 22,
-},
+    color: Colors.danger,
+    fontWeight: "600",
+  },
 });

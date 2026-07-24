@@ -17,20 +17,18 @@ export default function HorarioInput({
   const [novoHorario, setNovoHorario] = useState("");
 
   function adicionarHorario() {
-  console.log("Antes:", horarios);
+    if (!novoHorario.trim()) {
+      return;
+    }
 
-  const novosHorarios = [...horarios, novoHorario];
+    if (horarios.includes(novoHorario)) {
+      return;
+    }
 
-  console.log("Depois:", novosHorarios);
+    onChange([...horarios, novoHorario]);
 
-  onChange(novosHorarios);
-
-  setTimeout(() => {
-    console.log("Após onChange:", novosHorarios);
-  }, 100);
-
-  setNovoHorario("");
-}
+    setNovoHorario("");
+  }
 
   function removerHorario(index: number) {
     onChange(horarios.filter((_, i) => i !== index));

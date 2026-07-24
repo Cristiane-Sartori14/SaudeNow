@@ -10,27 +10,30 @@ interface HorarioInputProps {
   horarios: string[];
   onChange: (horarios: string[]) => void;
 }
+
 export default function HorarioInput({
   horarios,
   onChange,
 }: HorarioInputProps) {
   const [novoHorario, setNovoHorario] = useState("");
-
   function adicionarHorario() {
-  console.log("Antes:", horarios);
+    if (!novoHorario.trim()) {
+      return;
+    }
 
-  const novosHorarios = [...horarios, novoHorario];
+    const horarioRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-  console.log("Depois:", novosHorarios);
+    if (!horarioRegex.test(novoHorario)) {
+      return;
+    }
 
-  onChange(novosHorarios);
+    if (horarios.includes(novoHorario)) {
+      return;
+    }
 
-  setTimeout(() => {
-    console.log("Após onChange:", novosHorarios);
-  }, 100);
-
-  setNovoHorario("");
-}
+    onChange([...horarios, novoHorario]);
+    setNovoHorario("");
+  }
 
   function removerHorario(index: number) {
     onChange(horarios.filter((_, i) => i !== index));
@@ -44,18 +47,20 @@ export default function HorarioInput({
         value={novoHorario}
         onChangeText={setNovoHorario}
       />
+
       <Pressable style={styles.addButton} onPress={adicionarHorario}>
         <Text style={styles.addText}>+ Adicionar horário</Text>
       </Pressable>
+
       {horarios.map((horario, index) => (
         <View key={index} style={styles.item}>
           <Text style={styles.itemText}>🕒 {horario}</Text>
+
           <Pressable onPress={() => removerHorario(index)}>
-            {" "}
             <Text style={styles.remove}>🗑</Text>
-          </Pressable>{" "}
+          </Pressable>
         </View>
-      ))}{" "}
+      ))}
     </View>
   );
 }
@@ -87,16 +92,18 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: Spacing.md,
     marginBottom: Spacing.sm,
+
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  itemText: { 
-    fontSize: Fonts.text, 
-    color: Colors.text 
+
+  itemText: {
+    fontSize: Fonts.text,
+    color: Colors.text,
   },
-  
+
   remove: {
-  fontSize: 22,
-},
+    fontSize: 22,
+  },
 });

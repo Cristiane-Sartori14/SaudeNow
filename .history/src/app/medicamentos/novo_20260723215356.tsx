@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Text } from "react-native";
 import { Alert, ScrollView, StyleSheet, View, Text } from "react-native";
 
 import HorarioInput from "@/components/common/HorarioInput";
@@ -88,6 +89,8 @@ export default function NovoMedicamentoScreen() {
       />
 
       <HorarioInput horarios={horarios} onChange={setHorarios} />
+
+      <Text>Horários: {JSON.stringify(horarios)}</Text>
 
       <DateInput
         label="Data de início"

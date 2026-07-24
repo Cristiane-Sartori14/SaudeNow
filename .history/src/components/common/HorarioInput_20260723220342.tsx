@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-
 import Input from "@/components/common/Input";
 import Colors from "@/constants/Colors";
 import Fonts from "@/constants/Fonts";
 import Spacing from "@/constants/Spacing";
-
 interface HorarioInputProps {
   horarios: string[];
   onChange: (horarios: string[]) => void;
@@ -14,72 +12,58 @@ export default function HorarioInput({
   horarios,
   onChange,
 }: HorarioInputProps) {
+
   const [novoHorario, setNovoHorario] = useState("");
 
   function adicionarHorario() {
-  console.log("Antes:", horarios);
+    if (!novoHorario.trim()) {
+      return;
+    }
 
-  const novosHorarios = [...horarios, novoHorario];
+     const horarioRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-  console.log("Depois:", novosHorarios);
+       if (!horarioRegex.test(novoHorario)) {
+    return;
+  }
 
-  onChange(novosHorarios);
-
-  setTimeout(() => {
-    console.log("Após onChange:", novosHorarios);
-  }, 100);
-
-  setNovoHorario("");
-}
-
+    if (horarios.includes(novoHorario)) {
+      return;
+    }
+    onChange([...horarios, novoHorario]);
+    setNovoHorario("");
+  }
   function removerHorario(index: number) {
     onChange(horarios.filter((_, i) => i !== index));
   }
-
   return (
     <View style={styles.container}>
+      {" "}
       <Input
         label="Horário"
         placeholder="Ex.: 08:00"
         value={novoHorario}
         onChangeText={setNovoHorario}
-      />
+      />{" "}
       <Pressable style={styles.addButton} onPress={adicionarHorario}>
-        <Text style={styles.addText}>+ Adicionar horário</Text>
-      </Pressable>
+        {" "}
+        <Text style={styles.addText}> + Adicionar horário </Text>{" "}
+      </Pressable>{" "}
       {horarios.map((horario, index) => (
         <View key={index} style={styles.item}>
           <Text style={styles.itemText}>🕒 {horario}</Text>
+
           <Pressable onPress={() => removerHorario(index)}>
-            {" "}
             <Text style={styles.remove}>🗑</Text>
-          </Pressable>{" "}
+          </Pressable>
         </View>
       ))}{" "}
     </View>
   );
 }
-
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: Spacing.lg,
-  },
-
-  addButton: {
-    alignSelf: "flex-start",
-    backgroundColor: Colors.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    marginBottom: Spacing.md,
-  },
-
-  addText: {
-    color: Colors.white,
-    fontSize: Fonts.small,
-    fontWeight: "600",
-  },
-
+  container: { marginBottom: Spacing.lg },
+  addButton: { alignSelf: "flex-start", marginBottom: Spacing.md },
+  addText: { color: Colors.primary, fontSize: Fonts.text, fontWeight: "600" },
   item: {
     backgroundColor: Colors.card,
     borderRadius: 12,
@@ -91,12 +75,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  itemText: { 
-    fontSize: Fonts.text, 
-    color: Colors.text 
-  },
-  
-  remove: {
-  fontSize: 22,
-},
+  itemText: { fontSize: Fonts.text, color: Colors.text },
+  remove: { color: Colors.danger, fontWeight: "600" },
 });

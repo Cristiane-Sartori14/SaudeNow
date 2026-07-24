@@ -1,14 +1,11 @@
 import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, View, Text } from "react-native";
+import { Alert } from "react-native";
 
-import HorarioInput from "@/components/common/HorarioInput";
-import Input from "@/components/common/Input";
-import PrimaryButton from "@/components/common/PrimaryButton";
-import SelectInput from "@/components/common/SelectInput";
 import Layout from "@/components/layout/Layout";
 import ScreenHeader from "@/components/layout/ScreenHeader";
-import DateInput from "@/components/common/DateInput";
-import TextArea from "@/components/common/TextArea";
+import PrimaryButton from "@/components/common/PrimaryButton";
+import Input from "@/components/common/Input";
+import HorarioInput from "@/components/common/HorarioInput";
 
 export default function NovoMedicamentoScreen() {
   const [nome, setNome] = useState("");
@@ -16,16 +13,12 @@ export default function NovoMedicamentoScreen() {
   const [quantidade, setQuantidade] = useState("");
   const [horarios, setHorarios] = useState<string[]>([]);
   const [unidade, setUnidade] = useState("comprimido");
-  const [dataInicio, setDataInicio] = useState("");
-  const [dataFim, setDataFim] = useState("");
-  const [observacoes, setObservacoes] = useState("");
 
   function salvar() {
     if (
       !nome.trim() ||
       !dosagem.trim() ||
       !quantidade.trim() ||
-      !dataInicio.trim() ||
       horarios.length === 0
     ) {
       Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
@@ -38,11 +31,7 @@ export default function NovoMedicamentoScreen() {
       nome,
       dosagem,
       quantidade,
-      unidade,
       horarios,
-      dataInicio,
-      dataFim,
-      observacoes,
     });
   }
 
@@ -74,39 +63,21 @@ export default function NovoMedicamentoScreen() {
         value={quantidade}
         onChangeText={setQuantidade}
       />
+
       <SelectInput
-        label="Unidade"
-        selectedValue={unidade}
-        onValueChange={setUnidade}
-        options={[
-          { label: "Comprimido", value: "comprimido" },
-          { label: "Cápsula", value: "capsula" },
-          { label: "Gotas", value: "gotas" },
-          { label: "ml", value: "ml" },
-          { label: "Ampola", value: "ampola" },
-        ]}
-      />
+  label="Unidade"
+  selectedValue={unidade}
+  onValueChange={setUnidade}
+  options={[
+    { label: "Comprimido", value: "comprimido" },
+    { label: "Cápsula", value: "capsula" },
+    { label: "Gotas", value: "gotas" },
+    { label: "ml", value: "ml" },
+    { label: "Ampola", value: "ampola" },
+  ]}
+/>
 
       <HorarioInput horarios={horarios} onChange={setHorarios} />
-
-      <DateInput
-        label="Data de início"
-        value={dataInicio}
-        onChangeText={setDataInicio}
-      />
-
-      <DateInput
-        label="Data de término (opcional)"
-        value={dataFim}
-        onChangeText={setDataFim}
-      />
-
-      <TextArea
-        label="Observações"
-        placeholder="Informações adicionais..."
-        value={observacoes}
-        onChangeText={setObservacoes}
-      />
 
       <PrimaryButton title="Salvar" onPress={salvar} />
     </Layout>

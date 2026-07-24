@@ -89,6 +89,8 @@ export default function NovoMedicamentoScreen() {
 
       <HorarioInput horarios={horarios} onChange={setHorarios} />
 
+      <Text>Horários: {JSON.stringify(horarios)}</Text>
+
       <DateInput
         label="Data de início"
         value={dataInicio}
