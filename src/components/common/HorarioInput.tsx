@@ -17,20 +17,17 @@ export default function HorarioInput({
   const [novoHorario, setNovoHorario] = useState("");
 
   function adicionarHorario() {
-  console.log("Antes:", horarios);
+    console.log("Botão clicado");
+    console.log("Horários:", horarios);
+    console.log("Novo horário:", novoHorario);
 
-  const novosHorarios = [...horarios, novoHorario];
+    if (!novoHorario.trim()) {
+      return;
+    }
 
-  console.log("Depois:", novosHorarios);
-
-  onChange(novosHorarios);
-
-  setTimeout(() => {
-    console.log("Após onChange:", novosHorarios);
-  }, 100);
-
-  setNovoHorario("");
-}
+    onChange([...horarios, novoHorario.trim()]);
+    setNovoHorario("");
+  }
 
   function removerHorario(index: number) {
     onChange(horarios.filter((_, i) => i !== index));
@@ -44,18 +41,20 @@ export default function HorarioInput({
         value={novoHorario}
         onChangeText={setNovoHorario}
       />
+
       <Pressable style={styles.addButton} onPress={adicionarHorario}>
         <Text style={styles.addText}>+ Adicionar horário</Text>
       </Pressable>
+
       {horarios.map((horario, index) => (
         <View key={index} style={styles.item}>
           <Text style={styles.itemText}>🕒 {horario}</Text>
+
           <Pressable onPress={() => removerHorario(index)}>
-            {" "}
             <Text style={styles.remove}>🗑</Text>
-          </Pressable>{" "}
+          </Pressable>
         </View>
-      ))}{" "}
+      ))}
     </View>
   );
 }
@@ -91,12 +90,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  itemText: { 
-    fontSize: Fonts.text, 
-    color: Colors.text 
+  itemText: {
+    fontSize: Fonts.text,
+    color: Colors.text,
   },
-  
+
   remove: {
-  fontSize: 22,
-},
+    fontSize: 22,
+  },
 });
