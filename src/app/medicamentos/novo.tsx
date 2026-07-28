@@ -9,6 +9,7 @@ import Layout from "@/components/layout/Layout";
 import ScreenHeader from "@/components/layout/ScreenHeader";
 import DateInput from "@/components/common/DateInput";
 import TextArea from "@/components/common/TextArea";
+import MedicamentoRepository from "@/repositories/MedicamentoRepository";
 
 export default function NovoMedicamentoScreen() {
   const [nome, setNome] = useState("");
@@ -20,7 +21,7 @@ export default function NovoMedicamentoScreen() {
   const [dataFim, setDataFim] = useState("");
   const [observacoes, setObservacoes] = useState("");
 
-  function salvar() {
+  async function salvar() {
     if (
       !nome.trim() ||
       !dosagem.trim() ||
@@ -32,18 +33,24 @@ export default function NovoMedicamentoScreen() {
       return;
     }
 
-    Alert.alert("Medicamento", "Cadastro realizado com sucesso!");
+    try {
+      await MedicamentoRepository.criar({
+        nome,
+        dosagem,
+        quantidade: Number(quantidade),
+        unidade: unidade as "comprimido" | "cápsula" | "ml" | "gota" | "ampola",
+        horarios,
+        dataInicio,
+        dataFim: dataFim || undefined,
+        observacoes: observacoes || undefined,
+        ativo: true,
+      });
 
-    console.log({
-      nome,
-      dosagem,
-      quantidade,
-      unidade,
-      horarios,
-      dataInicio,
-      dataFim,
-      observacoes,
-    });
+      Alert.alert("Sucesso", "Medicamento cadastrado com sucesso!");
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erro", "Não foi possível salvar o medicamento.");
+    }
   }
 
   return (
@@ -80,8 +87,8 @@ export default function NovoMedicamentoScreen() {
         onValueChange={setUnidade}
         options={[
           { label: "Comprimido", value: "comprimido" },
-          { label: "Cápsula", value: "capsula" },
-          { label: "Gotas", value: "gotas" },
+          { label: "Cápsula", value: "cápsula" },
+          { label: "Gota", value: "gota" },
           { label: "ml", value: "ml" },
           { label: "Ampola", value: "ampola" },
         ]}
