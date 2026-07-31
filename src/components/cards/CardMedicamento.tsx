@@ -8,6 +8,7 @@ import Spacing from "@/constants/Spacing";
 interface CardMedicamentoProps {
   nome: string;
   dosagem: string;
+  unidade: string;
   horarios: string[];
   onEditar: () => void;
   onExcluir: () => void;
@@ -16,10 +17,18 @@ interface CardMedicamentoProps {
 export default function CardMedicamento({
   nome,
   dosagem,
+  unidade,
   horarios,
   onEditar,
   onExcluir,
 }: CardMedicamentoProps) {
+  const horariosOrdenados = [...horarios].sort((a, b) => {
+    const [ha, ma] = a.split(":").map(Number);
+    const [hb, mb] = b.split(":").map(Number);
+
+    return ha * 60 + ma - (hb * 60 + mb);
+  });
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -33,9 +42,12 @@ export default function CardMedicamento({
 
         <View style={styles.info}>
           <Text style={styles.nome}>{nome}</Text>
-          <Text style={styles.dosagem}>{dosagem}</Text>
+          <Text style={styles.dosagem}>
+            {dosagem} {unidade}
+          </Text>
+
           <Text style={styles.horarios}>
-            {horarios.join(" • ")}
+            🕘 {horariosOrdenados.join(" • ")}
           </Text>
         </View>
       </View>

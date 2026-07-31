@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, View, Text } from "react-native";
+import { Alert } from "react-native";
 
+import DateInput from "@/components/common/DateInput";
 import HorarioInput from "@/components/common/HorarioInput";
 import Input from "@/components/common/Input";
 import PrimaryButton from "@/components/common/PrimaryButton";
 import SelectInput from "@/components/common/SelectInput";
+import TextArea from "@/components/common/TextArea";
 import Layout from "@/components/layout/Layout";
 import ScreenHeader from "@/components/layout/ScreenHeader";
-import DateInput from "@/components/common/DateInput";
-import TextArea from "@/components/common/TextArea";
 import MedicamentoRepository from "@/repositories/MedicamentoRepository";
 
 export default function NovoMedicamentoScreen() {
@@ -56,8 +56,8 @@ export default function NovoMedicamentoScreen() {
   return (
     <Layout>
       <ScreenHeader
-        title="Novo Medicamento"
-        subtitle="Preencha os dados do medicamento."
+        title="Editar Medicamento"
+        subtitle="Altere as informações do medicamento."
       />
 
       <Input

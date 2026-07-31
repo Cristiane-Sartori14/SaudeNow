@@ -86,8 +86,16 @@ export default function MedicamentosScreen() {
             key={medicamento.id}
             nome={medicamento.nome}
             dosagem={medicamento.dosagem}
+            unidade={medicamento.unidade}
             horarios={medicamento.horarios}
-            onEditar={() => Alert.alert("Editar")}
+            onEditar={() =>
+              router.push({
+                pathname: "/medicamentos/editar",
+                params: {
+                  id: medicamento.id.toString(),
+                },
+              })
+            }
             onExcluir={() => excluirMedicamento(medicamento.id)}
           />
         ))
