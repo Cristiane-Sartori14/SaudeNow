@@ -43,12 +43,18 @@ export default function CardMedicamento({
         <View style={styles.info}>
           <Text style={styles.nome}>{nome}</Text>
           <Text style={styles.dosagem}>
-            {dosagem} {unidade}
+            {dosagem}
           </Text>
 
-          <Text style={styles.horarios}>
-            🕘 {horariosOrdenados.join(" • ")}
-          </Text>
+          <View style={styles.horarioContainer}>
+            <MaterialCommunityIcons
+              name="clock-outline"
+              size={16}
+              color={Colors.secondary}
+            />
+
+            <Text style={styles.horarios}>{horariosOrdenados.join(" • ")}</Text>
+          </View>
         </View>
       </View>
 
@@ -117,11 +123,16 @@ const styles = StyleSheet.create({
     color: Colors.subtitle,
   },
 
-  horarios: {
+  horarioContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 4,
-    fontSize: Fonts.small,
+  },
+
+  horarios: {
+    marginLeft: 4,
     color: Colors.primary,
-    fontWeight: "600",
+    fontSize: Fonts.small,
   },
 
   actions: {

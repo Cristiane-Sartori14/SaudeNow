@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Alert } from "react-native";
+import { useRouter } from "expo-router";
 
 import DateInput from "@/components/common/DateInput";
 import HorarioInput from "@/components/common/HorarioInput";
@@ -12,6 +13,7 @@ import ScreenHeader from "@/components/layout/ScreenHeader";
 import MedicamentoRepository from "@/repositories/MedicamentoRepository";
 
 export default function NovoMedicamentoScreen() {
+  const router = useRouter();
   const [nome, setNome] = useState("");
   const [dosagem, setDosagem] = useState("");
   const [quantidade, setQuantidade] = useState("");
@@ -20,8 +22,13 @@ export default function NovoMedicamentoScreen() {
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
   const [observacoes, setObservacoes] = useState("");
+  const [salvando, setSalvando] = useState(false);
 
   async function salvar() {
+    if (salvando) return;
+
+    setSalvando(true);
+
     if (
       !nome.trim() ||
       !dosagem.trim() ||
@@ -46,10 +53,17 @@ export default function NovoMedicamentoScreen() {
         ativo: true,
       });
 
-      Alert.alert("Sucesso", "Medicamento cadastrado com sucesso!");
+      Alert.alert("Sucesso", "Medicamento cadastrado com sucesso!", [
+        {
+          text: "OK",
+          onPress: () => router.back(),
+        },
+      ]);
     } catch (error) {
       console.error(error);
       Alert.alert("Erro", "Não foi possível salvar o medicamento.");
+    } finally {
+      setSalvando(false);
     }
   }
 
