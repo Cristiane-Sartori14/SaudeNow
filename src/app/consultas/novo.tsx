@@ -5,7 +5,6 @@ import { Alert } from "react-native";
 import DateInput from "@/components/common/DateInput";
 import Input from "@/components/common/Input";
 import PrimaryButton from "@/components/common/PrimaryButton";
-import TextArea from "@/components/common/TextArea";
 import Layout from "@/components/layout/Layout";
 import ScreenHeader from "@/components/layout/ScreenHeader";
 import ConsultaRepository from "@/repositories/ConsultaRepository";
@@ -18,37 +17,34 @@ export default function NovaConsultaScreen() {
   const [data, setData] = useState("");
   const [horario, setHorario] = useState("");
   const [local, setLocal] = useState("");
-  const [observacoes, setObservacoes] = useState("");
   const [salvando, setSalvando] = useState(false);
 
   async function salvar() {
+    if (salvando) return;
+
     if (
       !tipoConsulta.trim() ||
       !medico.trim() ||
       !data.trim() ||
-      !horario.trim() ||
-      !local.trim()
+      !horario.trim()
     ) {
       Alert.alert(
         "Campos obrigatórios",
-        "Preencha todos os campos obrigatórios.",
+        "Preencha o tipo da consulta, médico, data e horário.",
       );
 
       return;
     }
 
-    if (salvando) return;
-
     try {
       setSalvando(true);
 
       await ConsultaRepository.criar({
-        tipoConsulta,
-        medico,
+        tipoConsulta: tipoConsulta.trim(),
+        medico: medico.trim(),
         data,
         horario,
-        local,
-        observacoes: observacoes || undefined,
+        local: local.trim(),
       });
 
       Alert.alert("Sucesso", "Consulta cadastrada com sucesso!", [
@@ -74,7 +70,7 @@ export default function NovaConsultaScreen() {
       />
 
       <Input
-        label="Tipo de consulta"
+        label="Especialidade"
         placeholder="Ex.: Cardiologista"
         value={tipoConsulta}
         onChangeText={setTipoConsulta}
@@ -97,23 +93,13 @@ export default function NovaConsultaScreen() {
       />
 
       <Input
-        label="Local"
+        label="Local (opcional)"
         placeholder="Ex.: Hospital ou clínica"
         value={local}
         onChangeText={setLocal}
       />
 
-      <TextArea
-        label="Observações"
-        placeholder="Informações adicionais..."
-        value={observacoes}
-        onChangeText={setObservacoes}
-      />
-
-      <PrimaryButton
-        title={salvando ? "Salvando..." : "Salvar"}
-        onPress={salvar}
-      />
+      <PrimaryButton title="Salvar Consulta" onPress={salvar} />
     </Layout>
   );
 }

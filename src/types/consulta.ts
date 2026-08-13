@@ -1,15 +1,9 @@
 export interface Consulta {
-  id: string;
-
+  id: number;
+  tipoConsulta: string;
   medico: string;
-
-  especialidade: string;
-
   data: string;
-
   horario: string;
-
   local: string;
-
-  observacao?: string;
+  observacoes?: string;
 }

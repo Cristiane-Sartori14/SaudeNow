@@ -1,57 +1,83 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
 import DateInput from "@/components/common/DateInput";
 import Input from "@/components/common/Input";
 import PrimaryButton from "@/components/common/PrimaryButton";
-import TextArea from "@/components/common/TextArea";
 import Layout from "@/components/layout/Layout";
 import ScreenHeader from "@/components/layout/ScreenHeader";
 import ConsultaRepository from "@/repositories/ConsultaRepository";
 
-export default function NovaConsultaScreen() {
+export default function EditarConsultaScreen() {
   const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
   const [tipoConsulta, setTipoConsulta] = useState("");
   const [medico, setMedico] = useState("");
   const [data, setData] = useState("");
   const [horario, setHorario] = useState("");
   const [local, setLocal] = useState("");
-  const [observacoes, setObservacoes] = useState("");
+  const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
 
+  useEffect(() => {
+    carregarConsulta();
+  }, []);
+
+  async function carregarConsulta() {
+    try {
+      const consulta = await ConsultaRepository.buscarPorId(Number(id));
+
+      if (!consulta) {
+        Alert.alert("Erro", "Consulta não encontrada.");
+        router.back();
+        return;
+      }
+
+      setTipoConsulta(consulta.tipoConsulta);
+      setMedico(consulta.medico);
+      setData(consulta.data);
+      setHorario(consulta.horario);
+      setLocal(consulta.local);
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erro", "Não foi possível carregar a consulta.");
+    } finally {
+      setCarregando(false);
+    }
+  }
+
   async function salvar() {
+    if (salvando) return;
+
     if (
       !tipoConsulta.trim() ||
       !medico.trim() ||
       !data.trim() ||
-      !horario.trim() ||
-      !local.trim()
+      !horario.trim()
     ) {
       Alert.alert(
         "Campos obrigatórios",
-        "Preencha todos os campos obrigatórios.",
+        "Preencha a especialidade, médico, data e horário.",
       );
 
       return;
     }
 
-    if (salvando) return;
-
     try {
       setSalvando(true);
 
-      await ConsultaRepository.criar({
-        tipoConsulta,
-        medico,
+      await ConsultaRepository.atualizar({
+        id: Number(id),
+        tipoConsulta: tipoConsulta.trim(),
+        medico: medico.trim(),
         data,
         horario,
-        local,
-        observacoes: observacoes || undefined,
+        local: local.trim(),
       });
 
-      Alert.alert("Sucesso", "Consulta cadastrada com sucesso!", [
+      Alert.alert("Sucesso", "Consulta atualizada com sucesso!", [
         {
           text: "OK",
           onPress: () => router.back(),
@@ -60,21 +86,25 @@ export default function NovaConsultaScreen() {
     } catch (error) {
       console.error(error);
 
-      Alert.alert("Erro", "Não foi possível salvar a consulta.");
+      Alert.alert("Erro", "Não foi possível atualizar a consulta.");
     } finally {
       setSalvando(false);
     }
   }
 
+  if (carregando) {
+    return null;
+  }
+
   return (
     <Layout>
       <ScreenHeader
-        title="Nova Consulta"
-        subtitle="Cadastre uma nova consulta."
+        title="Editar Consulta"
+        subtitle="Altere as informações da consulta."
       />
 
       <Input
-        label="Tipo de consulta"
+        label="Especialidade"
         placeholder="Ex.: Cardiologista"
         value={tipoConsulta}
         onChangeText={setTipoConsulta}
@@ -97,23 +127,13 @@ export default function NovaConsultaScreen() {
       />
 
       <Input
-        label="Local"
+        label="Local (opcional)"
         placeholder="Ex.: Hospital ou clínica"
         value={local}
         onChangeText={setLocal}
       />
 
-      <TextArea
-        label="Observações"
-        placeholder="Informações adicionais..."
-        value={observacoes}
-        onChangeText={setObservacoes}
-      />
-
-      <PrimaryButton
-        title={salvando ? "Salvando..." : "Salvar"}
-        onPress={salvar}
-      />
+      <PrimaryButton title="Salvar Alterações" onPress={salvar} />
     </Layout>
   );
 }

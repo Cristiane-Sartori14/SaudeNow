@@ -1,15 +1,14 @@
 import { useRouter } from "expo-router";
 
-import Layout from "@/components/layout/Layout";
-import Header from "@/components/layout/Header";
 import CardHome from "@/components/cards/CardHome";
+import Header from "@/components/layout/Header";
+import Layout from "@/components/layout/Layout";
 
 export default function Home() {
   const router = useRouter();
 
   return (
     <Layout>
-
       <Header />
 
       <CardHome
@@ -46,7 +45,6 @@ export default function Home() {
         subtitle="Preferências"
         onPress={() => router.push("/configuracoes")}
       />
-
     </Layout>
   );
 }
