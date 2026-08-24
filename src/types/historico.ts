@@ -1,5 +1,5 @@
 export interface Historico {
-  id: string;
+  id: number;
 
   tipo: "medicamento" | "consulta" | "exercicio";
 

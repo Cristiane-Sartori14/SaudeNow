@@ -1,0 +1,9 @@
+export const CREATE_HISTORICO_TABLE = `
+  CREATE TABLE IF NOT EXISTS historico (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tipo TEXT NOT NULL,
+    descricao TEXT NOT NULL,
+    data TEXT NOT NULL,
+    concluido INTEGER NOT NULL DEFAULT 1
+  );
+`;
