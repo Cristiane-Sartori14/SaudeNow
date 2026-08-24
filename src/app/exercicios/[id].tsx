@@ -8,6 +8,7 @@ import ScreenHeader from "@/components/layout/ScreenHeader";
 import Colors from "@/constants/Colors";
 import Fonts from "@/constants/Fonts";
 import Spacing from "@/constants/Spacing";
+import HistoricoRepository from "@/repositories/HistoricoRepository";
 import { Exercicio } from "@/types/exercicio";
 
 const exercicios: Exercicio[] = [
@@ -75,18 +76,48 @@ export default function DetalheExercicioScreen() {
       </Layout>
     );
   }
+  
+  function obterDataHoraLocal(): string {
+  const agora = new Date();
 
-  function concluirExercicio() {
-    Alert.alert(
-      "Exercício concluído",
-      "Muito bem! Sua atividade foi registrada.",
-      [
-        {
-          text: "OK",
-          onPress: () => router.back(),
-        },
-      ],
-    );
+  const ano = agora.getFullYear();
+  const mes = String(agora.getMonth() + 1).padStart(2, "0");
+  const dia = String(agora.getDate()).padStart(2, "0");
+  const hora = String(agora.getHours()).padStart(2, "0");
+  const minuto = String(agora.getMinutes()).padStart(2, "0");
+  const segundo = String(agora.getSeconds()).padStart(2, "0");
+
+  return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
+}
+
+  async function concluirExercicio() {
+    if (!exercicio) {
+      return;
+    }
+
+    try {
+      await HistoricoRepository.criar({
+        tipo: "exercicio",
+        descricao: exercicio.nome,
+        data: obterDataHoraLocal(),
+        concluido: true,
+      });
+
+      Alert.alert(
+        "Exercício concluído",
+        "Muito bem! Sua atividade foi registrada.",
+        [
+          {
+            text: "OK",
+            onPress: () => router.back(),
+          },
+        ],
+      );
+    } catch (error) {
+      console.error(error);
+
+      Alert.alert("Erro", "Não foi possível registrar o exercício.");
+    }
   }
 
   return (
