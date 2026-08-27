@@ -3,55 +3,70 @@ import { useState } from "react";
 import { Alert } from "react-native";
 
 import DateInput from "@/components/common/DateInput";
+import HorarioInput from "@/components/common/HorarioInput";
 import Input from "@/components/common/Input";
 import PrimaryButton from "@/components/common/PrimaryButton";
+import SelectInput from "@/components/common/SelectInput";
 import TextArea from "@/components/common/TextArea";
 import Layout from "@/components/layout/Layout";
 import ScreenHeader from "@/components/layout/ScreenHeader";
-import ConsultaRepository from "@/repositories/ConsultaRepository";
+import MedicamentoRepository from "@/repositories/MedicamentoRepository";
 
-export default function NovaConsultaScreen() {
+export default function NovoMedicamentoScreen() {
   const router = useRouter();
 
-  const [tipoConsulta, setTipoConsulta] = useState("");
-  const [medico, setMedico] = useState("");
-  const [data, setData] = useState("");
-  const [horario, setHorario] = useState("");
-  const [local, setLocal] = useState("");
+  const [nome, setNome] = useState("");
+  const [dosagem, setDosagem] = useState("");
+  const [quantidade, setQuantidade] = useState("");
+  const [horarios, setHorarios] = useState<string[]>([]);
+  const [unidade, setUnidade] = useState<
+    "comprimido" | "cápsula" | "ml" | "gota" | "ampola"
+  >("comprimido");
+  const [dataInicio, setDataInicio] = useState("");
+  const [dataFim, setDataFim] = useState("");
   const [observacoes, setObservacoes] = useState("");
   const [salvando, setSalvando] = useState(false);
 
   async function salvar() {
+    if (salvando) return;
+
     if (
-      !tipoConsulta.trim() ||
-      !medico.trim() ||
-      !data.trim() ||
-      !horario.trim() ||
-      !local.trim()
+      !nome.trim() ||
+      !dosagem.trim() ||
+      !quantidade.trim() ||
+      !dataInicio.trim() ||
+      horarios.length === 0
     ) {
       Alert.alert(
         "Campos obrigatórios",
         "Preencha todos os campos obrigatórios.",
       );
-
       return;
     }
 
-    if (salvando) return;
+    const quantidadeNumerica = Number(quantidade);
+
+    if (!Number.isFinite(quantidadeNumerica) || quantidadeNumerica <= 0) {
+      Alert.alert("Quantidade inválida", "Informe uma quantidade válida.");
+      return;
+    }
 
     try {
       setSalvando(true);
 
-      await ConsultaRepository.criar({
-        tipoConsulta,
-        medico,
-        data,
-        horario,
-        local,
-        observacoes: observacoes || undefined,
+      await MedicamentoRepository.criar({
+        nome: nome.trim(),
+        dosagem: dosagem.trim(),
+        quantidade: quantidadeNumerica,
+        unidade,
+        horarios,
+        dataInicio,
+        dataFim: dataFim || undefined,
+        observacoes: observacoes.trim() || undefined,
+        ativo: true,
       });
 
-      Alert.alert("Sucesso", "Consulta cadastrada com sucesso!", [
+      Alert.alert("Sucesso", "Medicamento cadastrado com sucesso!", [
         {
           text: "OK",
           onPress: () => router.back(),
@@ -60,7 +75,7 @@ export default function NovaConsultaScreen() {
     } catch (error) {
       console.error(error);
 
-      Alert.alert("Erro", "Não foi possível salvar a consulta.");
+      Alert.alert("Erro", "Não foi possível salvar o medicamento.");
     } finally {
       setSalvando(false);
     }
@@ -69,38 +84,61 @@ export default function NovaConsultaScreen() {
   return (
     <Layout>
       <ScreenHeader
-        title="Nova Consulta"
-        subtitle="Cadastre uma nova consulta."
+        title="Novo Medicamento"
+        subtitle="Cadastre as informações do medicamento."
       />
 
       <Input
-        label="Tipo de consulta"
-        placeholder="Ex.: Cardiologista"
-        value={tipoConsulta}
-        onChangeText={setTipoConsulta}
+        label="Nome"
+        placeholder="Ex.: Losartana"
+        value={nome}
+        onChangeText={setNome}
       />
 
       <Input
-        label="Médico"
-        placeholder="Ex.: Dr. João Silva"
-        value={medico}
-        onChangeText={setMedico}
-      />
-
-      <DateInput label="Data" value={data} onChangeText={setData} />
-
-      <Input
-        label="Horário"
-        placeholder="Ex.: 09:00"
-        value={horario}
-        onChangeText={setHorario}
+        label="Dosagem"
+        placeholder="Ex.: 50 mg"
+        value={dosagem}
+        onChangeText={setDosagem}
       />
 
       <Input
-        label="Local"
-        placeholder="Ex.: Hospital ou clínica"
-        value={local}
-        onChangeText={setLocal}
+        label="Quantidade"
+        placeholder="Ex.: 30"
+        keyboardType="numeric"
+        value={quantidade}
+        onChangeText={setQuantidade}
+      />
+
+      <SelectInput
+        label="Unidade"
+        selectedValue={unidade}
+        onValueChange={(value) =>
+          setUnidade(
+            value as "comprimido" | "cápsula" | "ml" | "gota" | "ampola",
+          )
+        }
+        options={[
+          { label: "Comprimido", value: "comprimido" },
+          { label: "Cápsula", value: "cápsula" },
+          { label: "Gota", value: "gota" },
+          { label: "ml", value: "ml" },
+          { label: "Ampola", value: "ampola" },
+        ]}
+      />
+
+      <HorarioInput horarios={horarios} onChange={setHorarios} />
+
+      <DateInput
+        label="Data de início"
+        value={dataInicio}
+        onChangeText={setDataInicio}
+      />
+
+      <DateInput
+        label="Data de término (opcional)"
+        value={dataFim}
+        onChangeText={setDataFim}
       />
 
       <TextArea
