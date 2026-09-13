@@ -28,6 +28,7 @@ const exercicios: Exercicio[] = [
       "Sentado, estique e dobre o joelho lentamente, alternando as pernas.",
     repeticoes: "3 séries de 10 a 15 repetições",
     posicao: "Sentado",
+    imagem: require("../../assets/logos/fortalecimento-coxa.png"),
   },
   {
     id: "3",
@@ -36,6 +37,7 @@ const exercicios: Exercicio[] = [
       "Sentado, levante e abaixe os braços lentamente, sem forçar os ombros.",
     repeticoes: "2 séries de 6 a 8 repetições",
     posicao: "Sentado",
+    imagem: require("../../assets/logos/elevacao-bracos.png"),
   },
   {
     id: "4",
@@ -44,6 +46,7 @@ const exercicios: Exercicio[] = [
       "Sentado em uma cadeira firme, incline o tronco para frente e retorne lentamente.",
     repeticoes: "3 séries de 10 repetições",
     posicao: "Sentado",
+    imagem: require("../../assets/logos/flexao-tronco.png"),
   },
   {
     id: "5",
@@ -52,6 +55,7 @@ const exercicios: Exercicio[] = [
       "Utilize uma cadeira firme. Levante e sente novamente de forma lenta e segura.",
     repeticoes: "2 a 3 séries de 6 a 10 repetições",
     posicao: "Em pé",
+    imagem: require("../../assets/logos/levantar-sentar.png"),
   },
   {
     id: "6",
@@ -60,6 +64,7 @@ const exercicios: Exercicio[] = [
       "Movimente a cabeça lentamente para os lados, para cima e para baixo.",
     repeticoes: "10 repetições para cada movimento",
     posicao: "Sentado",
+    imagem: require("../../assets/logos/movimento-cabeca.png"),
   },
 ];
 
@@ -76,19 +81,19 @@ export default function DetalheExercicioScreen() {
       </Layout>
     );
   }
-  
+
   function obterDataHoraLocal(): string {
-  const agora = new Date();
+    const agora = new Date();
 
-  const ano = agora.getFullYear();
-  const mes = String(agora.getMonth() + 1).padStart(2, "0");
-  const dia = String(agora.getDate()).padStart(2, "0");
-  const hora = String(agora.getHours()).padStart(2, "0");
-  const minuto = String(agora.getMinutes()).padStart(2, "0");
-  const segundo = String(agora.getSeconds()).padStart(2, "0");
+    const ano = agora.getFullYear();
+    const mes = String(agora.getMonth() + 1).padStart(2, "0");
+    const dia = String(agora.getDate()).padStart(2, "0");
+    const hora = String(agora.getHours()).padStart(2, "0");
+    const minuto = String(agora.getMinutes()).padStart(2, "0");
+    const segundo = String(agora.getSeconds()).padStart(2, "0");
 
-  return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
-}
+    return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
+  }
 
   async function concluirExercicio() {
     if (!exercicio) {
