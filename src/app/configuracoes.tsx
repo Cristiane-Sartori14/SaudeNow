@@ -1,15 +1,17 @@
-import { View, Text } from "react-native";
+import { Text } from "react-native";
 
-export default function ConsultasScreen() {
+import Layout from "@/components/layout/Layout";
+import ScreenHeader from "@/components/layout/ScreenHeader";
+
+export default function ConfiguracoesScreen() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Consultas</Text>
-    </View>
+    <Layout>
+      <ScreenHeader
+        title="Configurações"
+        subtitle="Preferências do aplicativo."
+      />
+
+      <Text>Configurações do SaúdeNow</Text>
+    </Layout>
   );
 }

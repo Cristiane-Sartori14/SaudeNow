@@ -17,7 +17,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.SaudeNow"
     },
     "web": {
       "output": "static",
@@ -25,14 +26,16 @@
     },
     "plugins": [
       "expo-router",
+      "expo-dev-client",
       [
-        "expo-splash-screen",
+        "expo-build-properties",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
+          "android": {
+            "networkInspector": false
+          }
         }
       ],
+      "expo-splash-screen",
       "expo-font",
       "expo-sqlite",
       "expo-image",
