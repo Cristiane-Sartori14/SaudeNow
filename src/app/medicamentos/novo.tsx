@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Pressable, Text } from "react-native";
 
 import DateInput from "@/components/common/DateInput";
 import HorarioInput from "@/components/common/HorarioInput";
@@ -18,6 +18,7 @@ export default function NovoMedicamentoScreen() {
   const [nome, setNome] = useState("");
   const [dosagem, setDosagem] = useState("");
   const [quantidade, setQuantidade] = useState("");
+  const [usoContinuo, setUsoContinuo] = useState(false);
   const [horarios, setHorarios] = useState<string[]>([]);
   const [unidade, setUnidade] = useState<
     "comprimido" | "cápsula" | "ml" | "gota" | "ampola"
@@ -33,7 +34,7 @@ export default function NovoMedicamentoScreen() {
     if (
       !nome.trim() ||
       !dosagem.trim() ||
-      !quantidade.trim() ||
+      (!usoContinuo && !quantidade.trim()) ||
       !dataInicio.trim() ||
       horarios.length === 0
     ) {
@@ -44,11 +45,15 @@ export default function NovoMedicamentoScreen() {
       return;
     }
 
-    const quantidadeNumerica = Number(quantidade);
+    let quantidadeNumerica: number | undefined;
 
-    if (!Number.isFinite(quantidadeNumerica) || quantidadeNumerica <= 0) {
-      Alert.alert("Quantidade inválida", "Informe uma quantidade válida.");
-      return;
+    if (!usoContinuo) {
+      quantidadeNumerica = Number(quantidade);
+
+      if (!Number.isFinite(quantidadeNumerica) || quantidadeNumerica <= 0) {
+        Alert.alert("Quantidade inválida", "Informe uma quantidade válida.");
+        return;
+      }
     }
 
     try {
@@ -61,7 +66,7 @@ export default function NovoMedicamentoScreen() {
         unidade,
         horarios,
         dataInicio,
-        dataFim: dataFim || undefined,
+        dataFim: usoContinuo ? undefined : dataFim || undefined,
         observacoes: observacoes.trim() || undefined,
         ativo: true,
       });
@@ -74,7 +79,6 @@ export default function NovoMedicamentoScreen() {
       ]);
     } catch (error) {
       console.error(error);
-
       Alert.alert("Erro", "Não foi possível salvar o medicamento.");
     } finally {
       setSalvando(false);
@@ -102,13 +106,43 @@ export default function NovoMedicamentoScreen() {
         onChangeText={setDosagem}
       />
 
-      <Input
-        label="Quantidade"
-        placeholder="Ex.: 30"
-        keyboardType="numeric"
-        value={quantidade}
-        onChangeText={setQuantidade}
-      />
+      <Pressable
+        onPress={() => setUsoContinuo((valor) => !valor)}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 16,
+          paddingVertical: 8,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 28,
+            marginRight: 10,
+          }}
+        >
+          {usoContinuo ? "☑" : "☐"}
+        </Text>
+
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "500",
+          }}
+        >
+          Uso contínuo
+        </Text>
+      </Pressable>
+
+      {!usoContinuo && (
+        <Input
+          label="Quantidade"
+          placeholder="Ex.: 30"
+          keyboardType="numeric"
+          value={quantidade}
+          onChangeText={setQuantidade}
+        />
+      )}
 
       <SelectInput
         label="Unidade"
@@ -135,11 +169,13 @@ export default function NovoMedicamentoScreen() {
         onChangeText={setDataInicio}
       />
 
-      <DateInput
-        label="Data de término (opcional)"
-        value={dataFim}
-        onChangeText={setDataFim}
-      />
+      {!usoContinuo && (
+        <DateInput
+          label="Data de término (opcional)"
+          value={dataFim}
+          onChangeText={setDataFim}
+        />
+      )}
 
       <TextArea
         label="Observações"

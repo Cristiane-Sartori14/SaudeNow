@@ -1,4 +1,6 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import Colors from "@/constants/Colors";
 import Fonts from "@/constants/Fonts";
@@ -17,36 +19,67 @@ export default function DateInput({
   onChangeText,
   placeholder = "dd/mm/aaaa",
 }: DateInputProps) {
+  const [mostrarCalendario, setMostrarCalendario] = useState(false);
+
+  function obterDataInicial(): Date {
+    if (!value) {
+      return new Date();
+    }
+
+    const partes = value.split("/");
+
+    if (partes.length === 3) {
+      const dia = Number(partes[0]);
+      const mes = Number(partes[1]) - 1;
+      const ano = Number(partes[2]);
+
+      const data = new Date(ano, mes, dia);
+
+      if (!Number.isNaN(data.getTime())) {
+        return data;
+      }
+    }
+
+    return new Date();
+  }
+
+  function formatarData(data: Date): string {
+    const dia = String(data.getDate()).padStart(2, "0");
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const ano = data.getFullYear();
+
+    return `${dia}/${mes}/${ano}`;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
 
-      <TextInput
+      <Pressable
         style={styles.input}
-        value={value}
-        onChangeText={(text) => {
-          const numeros = text.replace(/\D/g, "").slice(0, 8);
+        onPress={() => setMostrarCalendario(true)}
+      >
+        <Text style={value ? styles.text : styles.placeholder}>
+          {value || placeholder}
+        </Text>
+      </Pressable>
 
-          let data = numeros;
+      {mostrarCalendario && (
+        <DateTimePicker
+          value={obterDataInicial()}
+          mode="date"
+          display="calendar"
+          onChange={(event, selectedDate) => {
+            setMostrarCalendario(false);
 
-          if (numeros.length > 2) {
-            data = `${numeros.slice(0, 2)}/${numeros.slice(2)}`;
-          }
+            if (event.type === "dismissed" || !selectedDate) {
+              return;
+            }
 
-          if (numeros.length > 4) {
-            data = `${numeros.slice(0, 2)}/${numeros.slice(
-              2,
-              4,
-            )}/${numeros.slice(4)}`;
-          }
-
-          onChangeText(data);
-        }}
-        placeholder={placeholder}
-        placeholderTextColor={Colors.subtitle}
-        keyboardType="numeric"
-        maxLength={10}
-      />
+            onChangeText(formatarData(selectedDate));
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -63,12 +96,22 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    height: 56,
+    backgroundColor: Colors.card,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: Colors.border,
-    borderRadius: 10,
     paddingHorizontal: Spacing.md,
-    paddingVertical: 12,
+    justifyContent: "center",
+  },
+
+  text: {
     fontSize: Fonts.text,
     color: Colors.text,
+  },
+
+  placeholder: {
+    fontSize: Fonts.text,
+    color: Colors.subtitle,
   },
 });

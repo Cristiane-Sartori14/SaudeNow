@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Pressable, Text } from "react-native";
 
 import DateInput from "@/components/common/DateInput";
 import HorarioInput from "@/components/common/HorarioInput";
@@ -17,6 +17,7 @@ import MedicamentoRepository from "@/repositories/MedicamentoRepository";
 export default function EditarMedicamentoScreen() {
   const [nome, setNome] = useState("");
   const [dosagem, setDosagem] = useState("");
+  const [usoContinuo, setUsoContinuo] = useState(false);
   const [quantidade, setQuantidade] = useState("");
   const [horarios, setHorarios] = useState<string[]>([]);
   const [unidade, setUnidade] = useState("comprimido");
@@ -43,11 +44,17 @@ export default function EditarMedicamentoScreen() {
 
       setNome(medicamento.nome);
       setDosagem(medicamento.dosagem);
-      setQuantidade(String(medicamento.quantidade));
+      const medicamentoEhContinuo = medicamento.quantidade == null;
+
+      setUsoContinuo(medicamentoEhContinuo);
+      setQuantidade(
+        medicamento.quantidade != null ? String(medicamento.quantidade) : "",
+      );
       setUnidade(medicamento.unidade);
       setHorarios(medicamento.horarios);
       setDataInicio(medicamento.dataInicio);
-      setDataFim(medicamento.dataFim ?? "");
+      setDataFim(medicamentoEhContinuo ? "" : (medicamento.dataFim ?? ""));
+
       setObservacoes(medicamento.observacoes ?? "");
     }
 
@@ -58,25 +65,39 @@ export default function EditarMedicamentoScreen() {
     if (
       !nome.trim() ||
       !dosagem.trim() ||
-      !quantidade.trim() ||
+      (!usoContinuo && !quantidade.trim()) ||
       !dataInicio.trim() ||
       horarios.length === 0
     ) {
-      Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
+      Alert.alert(
+        "Campos obrigatórios",
+        "Preencha todos os campos obrigatórios.",
+      );
       return;
+    }
+
+    let quantidadeNumerica: number | undefined;
+
+    if (!usoContinuo) {
+      quantidadeNumerica = Number(quantidade);
+
+      if (!Number.isFinite(quantidadeNumerica) || quantidadeNumerica <= 0) {
+        Alert.alert("Quantidade inválida", "Informe uma quantidade válida.");
+        return;
+      }
     }
 
     try {
       await MedicamentoRepository.atualizar({
         id: Number(id),
-        nome,
-        dosagem,
-        quantidade: Number(quantidade),
+        nome: nome.trim(),
+        dosagem: dosagem.trim(),
+        quantidade: quantidadeNumerica,
         unidade: unidade as "comprimido" | "cápsula" | "ml" | "gota" | "ampola",
         horarios,
         dataInicio,
-        dataFim: dataFim || undefined,
-        observacoes: observacoes || undefined,
+        dataFim: usoContinuo ? undefined : dataFim || undefined,
+        observacoes: observacoes.trim() || undefined,
         ativo: true,
       });
 
@@ -88,6 +109,7 @@ export default function EditarMedicamentoScreen() {
       Alert.alert("Erro", "Não foi possível atualizar o medicamento.");
     }
   }
+
   return (
     <Layout>
       <ScreenHeader
@@ -97,7 +119,7 @@ export default function EditarMedicamentoScreen() {
 
       <Input
         label="Nome"
-        placeholder="Ex.: Losartana"
+        placeholder="Nome medicamento"
         value={nome}
         onChangeText={setNome}
       />
@@ -109,13 +131,44 @@ export default function EditarMedicamentoScreen() {
         onChangeText={setDosagem}
       />
 
-      <Input
-        label="Quantidade"
-        placeholder="Ex.: 30"
-        keyboardType="numeric"
-        value={quantidade}
-        onChangeText={setQuantidade}
-      />
+      <Pressable
+        onPress={() => setUsoContinuo((valor) => !valor)}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 16,
+          paddingVertical: 8,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 28,
+            marginRight: 10,
+          }}
+        >
+          {usoContinuo ? "☑" : "☐"}
+        </Text>
+
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "500",
+          }}
+        >
+          Uso contínuo
+        </Text>
+      </Pressable>
+
+      {!usoContinuo && (
+        <Input
+          label="Quantidade"
+          placeholder="Ex.: 30"
+          keyboardType="numeric"
+          value={quantidade}
+          onChangeText={setQuantidade}
+        />
+      )}
+
       <SelectInput
         label="Unidade"
         selectedValue={unidade}
@@ -136,12 +189,13 @@ export default function EditarMedicamentoScreen() {
         value={dataInicio}
         onChangeText={setDataInicio}
       />
-
-      <DateInput
-        label="Data de término (opcional)"
-        value={dataFim}
-        onChangeText={setDataFim}
-      />
+      {!usoContinuo && (
+        <DateInput
+          label="Data de término (opcional)"
+          value={dataFim}
+          onChangeText={setDataFim}
+        />
+      )}
 
       <TextArea
         label="Observações"

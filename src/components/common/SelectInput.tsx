@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { StyleSheet, Text, View } from "react-native";
 
 import Colors from "@/constants/Colors";
 import Fonts from "@/constants/Fonts";
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
   },
 
   pickerContainer: {
+    height: 56,
     borderWidth: 1,
     borderColor: Colors.border,
     borderRadius: 12,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
 
   picker: {
-    height: 50,
+    height: 56,
     width: "100%",
   },
 });

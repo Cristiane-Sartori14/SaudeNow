@@ -2,7 +2,7 @@ export interface Medicamento {
   id: number;
   nome: string;
   dosagem: string;
-  quantidade: number;
+  quantidade?: number;
   unidade: "comprimido" | "cápsula" | "ml" | "gota" | "ampola";
   horarios: string[];
   dataInicio: string;

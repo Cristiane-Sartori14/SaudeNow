@@ -26,7 +26,7 @@ class MedicamentoRepository {
       [
         medicamento.nome,
         medicamento.dosagem,
-        medicamento.quantidade,
+        medicamento.quantidade ?? null,
         medicamento.unidade,
         medicamento.dataInicio,
         medicamento.dataFim ?? null,
@@ -60,7 +60,7 @@ class MedicamentoRepository {
       id: number;
       nome: string;
       dosagem: string;
-      quantidade: number;
+      quantidade: number | null;
       unidade: Medicamento["unidade"];
       data_inicio: string;
       data_fim: string | null;
@@ -69,10 +69,10 @@ class MedicamentoRepository {
       criado_em: string;
       atualizado_em: string;
     }>(`
-    SELECT *
-    FROM medicamentos
-    ORDER BY nome
-  `);
+  SELECT *
+  FROM medicamentos
+  ORDER BY nome
+`);
 
     const resultado: Medicamento[] = [];
 
@@ -91,7 +91,7 @@ class MedicamentoRepository {
         id: item.id,
         nome: item.nome,
         dosagem: item.dosagem,
-        quantidade: item.quantidade,
+        quantidade: item.quantidade ?? undefined,
         unidade: item.unidade,
         horarios: horarios.map((h) => h.horario),
         dataInicio: item.data_inicio,
@@ -111,7 +111,7 @@ class MedicamentoRepository {
       id: number;
       nome: string;
       dosagem: string;
-      quantidade: number;
+      quantidade: number | null;
       unidade: Medicamento["unidade"];
       data_inicio: string;
       data_fim: string | null;
@@ -121,10 +121,10 @@ class MedicamentoRepository {
       atualizado_em: string;
     }>(
       `
-    SELECT *
-    FROM medicamentos
-    WHERE id = ?
-    `,
+  SELECT *
+  FROM medicamentos
+  WHERE id = ?
+  `,
       [id],
     );
 
@@ -146,7 +146,7 @@ class MedicamentoRepository {
       id: item.id,
       nome: item.nome,
       dosagem: item.dosagem,
-      quantidade: item.quantidade,
+      quantidade: item.quantidade ?? undefined,
       unidade: item.unidade,
       horarios: horarios.map((h) => h.horario),
       dataInicio: item.data_inicio,
@@ -181,7 +181,7 @@ class MedicamentoRepository {
       [
         medicamento.nome,
         medicamento.dosagem,
-        medicamento.quantidade,
+        medicamento.quantidade ?? null,
         medicamento.unidade,
         medicamento.dataInicio,
         medicamento.dataFim ?? null,

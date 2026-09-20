@@ -3,7 +3,7 @@ export const CREATE_MEDICAMENTOS_TABLE = `
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
     dosagem TEXT NOT NULL,
-    quantidade INTEGER NOT NULL,
+    quantidade INTEGER,
     unidade TEXT NOT NULL,
     data_inicio TEXT NOT NULL,
     data_fim TEXT,

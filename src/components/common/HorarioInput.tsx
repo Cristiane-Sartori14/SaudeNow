@@ -16,11 +16,17 @@ export default function HorarioInput({
 }: HorarioInputProps) {
   const [novoHorario, setNovoHorario] = useState("");
 
-  function adicionarHorario() {
-    console.log("Botão clicado");
-    console.log("Horários:", horarios);
-    console.log("Novo horário:", novoHorario);
+  function formatarHorario(texto: string): string {
+    const numeros = texto.replace(/\D/g, "").slice(0, 4);
 
+    if (numeros.length <= 2) {
+      return numeros;
+    }
+
+    return `${numeros.slice(0, 2)}:${numeros.slice(2)}`;
+  }
+  
+  function adicionarHorario() {
     if (!novoHorario.trim()) {
       return;
     }
@@ -39,7 +45,11 @@ export default function HorarioInput({
         label="Horário"
         placeholder="Ex.: 08:00"
         value={novoHorario}
-        onChangeText={setNovoHorario}
+        onChangeText={(texto) => {
+          setNovoHorario(formatarHorario(texto));
+        }}
+        keyboardType="numeric"
+        maxLength={5}
       />
 
       <Pressable style={styles.addButton} onPress={adicionarHorario}>
