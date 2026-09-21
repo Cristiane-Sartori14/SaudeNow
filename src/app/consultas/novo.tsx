@@ -19,6 +19,16 @@ export default function NovaConsultaScreen() {
   const [local, setLocal] = useState("");
   const [salvando, setSalvando] = useState(false);
 
+  function formatarHorario(texto: string): string {
+    const numeros = texto.replace(/\D/g, "").slice(0, 4);
+
+    if (numeros.length <= 2) {
+      return numeros;
+    }
+
+    return `${numeros.slice(0, 2)}:${numeros.slice(2)}`;
+  }
+
   async function salvar() {
     if (salvando) return;
 
@@ -89,7 +99,11 @@ export default function NovaConsultaScreen() {
         label="Horário"
         placeholder="Ex.: 09:00"
         value={horario}
-        onChangeText={setHorario}
+        onChangeText={(texto) => {
+          setHorario(formatarHorario(texto));
+        }}
+        keyboardType="numeric"
+        maxLength={5}
       />
 
       <Input
