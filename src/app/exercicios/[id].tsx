@@ -1,6 +1,15 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
 
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 import PrimaryButton from "@/components/common/PrimaryButton";
 import Layout from "@/components/layout/Layout";
@@ -71,6 +80,7 @@ const exercicios: Exercicio[] = [
 export default function DetalheExercicioScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [imagemAmpliada, setImagemAmpliada] = useState(false);
 
   const exercicio = exercicios.find((item) => item.id === id);
 
@@ -133,12 +143,40 @@ export default function DetalheExercicioScreen() {
       />
 
       {exercicio.imagem && (
-        <Image
-          source={exercicio.imagem}
-          style={styles.imagem}
-          resizeMode="contain"
-        />
+        <Pressable
+          style={styles.areaImagem}
+          onPress={() => setImagemAmpliada(true)}
+        >
+          <Image
+            source={exercicio.imagem}
+            style={styles.imagem}
+            resizeMode="contain"
+          />
+        </Pressable>
       )}
+
+      <Modal
+        visible={imagemAmpliada}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setImagemAmpliada(false)}
+      >
+        <View style={styles.modalContainer}>
+          <Pressable
+            style={styles.fechar}
+            onPress={() => setImagemAmpliada(false)}
+          >
+            <Text style={styles.fecharTexto}>✕</Text>
+          </Pressable>
+
+          <Image
+            source={exercicio.imagem}
+            style={styles.imagemAmpliada}
+            resizeMode="contain"
+          />
+        </View>
+      </Modal>
 
       <View style={styles.card}>
         <Text style={styles.label}>Como realizar</Text>
@@ -217,9 +255,45 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
-  imagem: {
+  areaImagem: {
     width: "100%",
     height: 160,
     marginBottom: Spacing.md,
+  },
+
+  imagem: {
+    width: "100%",
+    height: "100%",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.85)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: Spacing.md,
+  },
+
+  fechar: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#FFF",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
+  },
+
+  fecharTexto: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: Colors.text,
+  },
+
+  imagemAmpliada: {
+    width: "100%",
+    height: "80%",
   },
 });

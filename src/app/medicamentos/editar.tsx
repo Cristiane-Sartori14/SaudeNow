@@ -189,6 +189,7 @@ export default function EditarMedicamentoScreen() {
         value={dataInicio}
         onChangeText={setDataInicio}
       />
+
       {!usoContinuo && (
         <DateInput
           label="Data de término (opcional)"

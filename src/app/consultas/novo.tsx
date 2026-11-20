@@ -81,7 +81,7 @@ export default function NovaConsultaScreen() {
 
       <Input
         label="Especialidade"
-        placeholder="Ex.: Cardiologista"
+        placeholder="Ex.: Especialista"
         value={tipoConsulta}
         onChangeText={setTipoConsulta}
       />
