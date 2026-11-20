@@ -99,9 +99,7 @@ export default function NovaConsultaScreen() {
         label="Horário"
         placeholder="Ex.: 09:00"
         value={horario}
-        onChangeText={(texto) => {
-          setHorario(formatarHorario(texto));
-        }}
+        onChangeText={(texto) => setHorario(formatarHorario(texto))}
         keyboardType="numeric"
         maxLength={5}
       />
