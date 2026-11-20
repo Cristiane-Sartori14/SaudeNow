@@ -69,14 +69,12 @@ export default function DateInput({
           value={obterDataInicial()}
           mode="date"
           display="calendar"
-          onChange={(event, selectedDate) => {
+          onValueChange={(event, selectedDate) => {
             setMostrarCalendario(false);
-
-            if (event.type === "dismissed" || !selectedDate) {
-              return;
-            }
-
             onChangeText(formatarData(selectedDate));
+          }}
+          onDismiss={() => {
+            setMostrarCalendario(false);
           }}
         />
       )}
